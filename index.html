@@ -1,361 +1,183 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071426">
+<meta name="description" content="An interactive chemistry explorer for the first 18 elements: periodic table, atomic properties, electron shells, Lewis structures, families and quizzes.">
 <title>Periodic Table | Chemistry Explorer</title>
 <style>
-:root{--bg:#071426;--panel:#0c2038;--panel2:#102945;--text:#eaf4ff;--muted:#a9c4e4;--line:#21496b;--accent:#57b8ff}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#102b49 0,#071426 60%);color:var(--text);font:15px/1.5 Inter,system-ui,Segoe UI,Arial,sans-serif}
-[dir="rtl"]{text-align:right}
-header{padding:22px clamp(16px,3vw,42px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;background:#061326d9;position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}
-.brand{display:flex;gap:14px;align-items:center}.atom{font-size:36px;color:var(--accent)}h1{font-size:clamp(22px,3vw,32px);margin:0} .subtitle{color:var(--muted);font-size:13px}
-nav{display:flex;gap:8px;flex-wrap:wrap}button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);background:#102945;color:var(--text);padding:9px 13px;border-radius:9px}button:hover,button.active{border-color:var(--accent);background:#16436b}input{width:min(330px,90vw);background:#0a1d33;color:var(--text);border:1px solid var(--line);padding:11px 14px;border-radius:10px}
-main{padding:24px clamp(12px,2vw,28px);max-width:1800px;margin:auto}.intro{display:flex;align-items:end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px}.intro h2{margin:0 0 5px;font-size:24px}.muted{color:var(--muted)}
-.legend{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 20px}.tag{font-size:12px;border:1px solid var(--line);padding:5px 9px;border-radius:20px;color:#d7e9ff;display:flex;gap:7px;align-items:center}.swatch{width:10px;height:10px;border-radius:3px;display:inline-block}
-.table-wrap{overflow-x:auto;padding-bottom:8px}.periodic{direction:ltr;display:grid;grid-template-columns:34px repeat(8,minmax(80px,1fr));gap:6px;min-width:760px}.groupnum,.periodnum{color:#9dbfe4;text-align:center;font-size:13px;font-weight:600;padding:6px;display:grid;place-content:center}.element{min-height:76px;border:1px solid #ffffff30;border-radius:8px;padding:6px 4px;position:relative;color:#071426;text-align:center;transition:transform .12s,filter .12s;overflow:hidden}.element:hover{transform:translateY(-2px);filter:brightness(1.13);z-index:1}.element.selected{outline:3px solid white;outline-offset:1px}.anum{font-size:11px;text-align:left;opacity:.85}[dir="rtl"] .anum{text-align:right}.sym{font-size:23px;font-weight:800;line-height:1.2}.ename{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mass{font-size:9.5px;opacity:.85}
-.alkali{background:#f28b72}.alkaline{background:#f3b56c}.post,.metalloid,.nonmetal{background:#9aa9ba}.halogen{background:#65b9f3}.noble{background:#5299f0}
-.content-grid{display:grid;grid-template-columns:minmax(300px,1.1fr) minmax(320px,1fr);gap:18px;margin-top:22px}.panel{background:linear-gradient(145deg,#0d2540,#081a2e);border:1px solid var(--line);border-radius:15px;padding:20px;min-width:0}.panel h2,.panel h3{margin:0 0 12px}.detail-top{display:flex;gap:18px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}.big-element{width:110px;height:118px;border-radius:12px;display:grid;place-content:center;text-align:center;color:#061426;flex-shrink:0}.big-element .sym{font-size:42px}.big-element .anum{font-size:14px;text-align:center}.detail-top h2{font-size:28px;margin:0}.pill{display:inline-block;padding:3px 9px;border-radius:20px;background:#145b60;color:#a9fff0;font-size:12px;margin:4px 0 8px}.props{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;margin-top:12px}.prop{padding:8px 0;border-bottom:1px solid #183955;display:flex;flex-direction:column;gap:2px}.prop span:first-child{font-size:12px;color:var(--muted)}.prop strong{font-size:14px;overflow-wrap:anywhere}.subgrid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:16px}.subpanel{border:1px solid var(--line);background:rgba(16,41,69,.55);border-radius:12px;padding:16px;min-width:0;min-height:190px}.config{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow-x:auto;overflow-wrap:normal;color:#c9e7ff;font-size:clamp(20px,2.4vw,30px);font-weight:800;letter-spacing:2px;padding:14px 10px;background:#061326;border:1px solid #21496b;border-radius:10px;text-align:center;min-height:66px;display:flex;align-items:center;justify-content:center;gap:12px;direction:ltr}.lewis{font-size:32px;text-align:center;min-height:145px;display:grid;place-content:center;font-weight:600;background:#061326;border:1px solid #21496b;border-radius:10px;margin:8px 0;padding:10px}.subpanel h3{font-size:18px;color:#eaf4ff}.lewis small{font-size:11px;color:var(--muted);font-weight:400}.family-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.family-card{background:#0b2037;border:1px solid var(--line);padding:15px;border-radius:12px}.family-card h3{font-size:16px;margin:0 0 6px}.family-card p{color:var(--muted);font-size:13px;margin:0}
-.credits{text-align:center;margin:42px 0 12px;padding:clamp(28px,5vw,64px);border:2px solid #3678a9;background:radial-gradient(ellipse at top,#153a5d,#0c2038 55%,#061326);border-radius:22px;color:var(--muted);box-shadow:0 18px 55px #0005}.credits strong{color:var(--text)}.credits .team-kicker{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#72c8ff}.credits .team-lead{margin:20px auto 24px;padding:24px;max-width:600px;border:1px solid #57b8ff88;border-radius:16px;background:#16436b55}.credits .team-lead strong{display:block;font-size:clamp(22px,3vw,32px);margin-bottom:6px}.credits .team-lead small{font-size:14px;color:#9ddcff}.credit-list{gap:14px 18px}.credit-list span{padding:18px 24px;min-width:180px;font-size:17px;background:#102945;border:1px solid #32648a;border-radius:13px}
-.credit-list{display:flex;gap:14px 18px;justify-content:center;flex-wrap:wrap;margin-top:15px}.credit-list span{padding:18px 24px;min-width:180px;font-size:17px;background:#102945;border:1px solid #32648a;border-radius:13px}
-.hidden{display:none!important}.note{font-size:12px;color:var(--muted);margin-top:12px}
-@media(max-width:850px){.content-grid{grid-template-columns:1fr}.props{grid-template-columns:1fr 1fr}.detail-top h2{font-size:24px}}
-@media(max-width:520px){header{position:static}.props,.subgrid{grid-template-columns:1fr}.big-element{width:88px;height:100px}.element{min-height:64px}}
+:root{color-scheme:dark;--bg:#071426;--panel:#0d2037;--panel2:#102945;--line:#234665;--text:#edf6ff;--muted:#a9c1da;--accent:#66c4ff;--mint:#70e0c0;--shadow:0 18px 48px #0004}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#173d60 0,transparent 48%),var(--bg);color:var(--text);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer;color:inherit}a{color:var(--accent)}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px clamp(14px,3vw,42px);background:#071426eF;border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+.brand{display:flex;align-items:center;gap:12px}.atom{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,#17476b,#0b2944);color:var(--accent);font-size:29px}.brand h1{font-size:clamp(19px,2.5vw,27px);line-height:1.15;margin:0}.subtitle{color:var(--muted);font-size:12px}
+nav{display:flex;gap:7px;flex-wrap:wrap}button,.control{border:1px solid var(--line);background:#102945;padding:9px 13px;border-radius:10px;transition:.18s}button:hover,button.active{border-color:var(--accent);background:#16436b;transform:translateY(-1px)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#lang-btn{background:#16436b;border-color:var(--accent)}main{max-width:1500px;margin:auto;padding:26px clamp(12px,2.5vw,34px) 60px}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:12px 0 20px}.eyebrow{color:var(--mint);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:800}.hero h2{font-size:clamp(27px,4vw,42px);line-height:1.12;margin:8px 0}.hero p{max-width:720px;color:var(--muted);margin:0}.hero-stat{display:flex;gap:10px;flex-wrap:wrap}.stat{min-width:100px;padding:13px 16px;border:1px solid var(--line);border-radius:14px;background:#0d2037;text-align:center}.stat strong{display:block;font-size:22px;color:var(--accent)}.stat span{font-size:11px;color:var(--muted)}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap;margin:26px 0 13px}.section-head h2{font-size:22px;margin:0}.section-head p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.searchbar{display:flex;gap:8px;flex-wrap:wrap}.searchbar input,.control{background:#091c30;color:var(--text);border:1px solid var(--line);padding:10px 13px;border-radius:10px;min-width:220px}.searchbar input::placeholder{color:#809bb7}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}.tag{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border:1px solid var(--line);border-radius:30px;color:#dbeaff;font-size:12px}.swatch{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+.table-shell{padding:12px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#0c2037,#08192b);box-shadow:var(--shadow)}.table-wrap{overflow-x:auto;padding:2px 2px 8px}.periodic{direction:ltr;display:grid;grid-template-columns:30px repeat(8,minmax(72px,1fr));gap:5px;min-width:660px}.groupnum,.periodnum{display:grid;place-items:center;color:#a9c1da;font-size:12px;font-weight:700;padding:5px}.element{min-height:78px;border:1px solid #ffffff30;border-radius:9px;padding:5px 3px;color:#061426;text-align:center;position:relative;overflow:hidden}.element:hover{filter:brightness(1.12);transform:translateY(-2px)}.element.selected{outline:3px solid white;outline-offset:1px}.element:disabled{opacity:.12;cursor:not-allowed;filter:grayscale(1)}.anum{font-size:10px;text-align:left;opacity:.8}.sym{font-size:23px;font-weight:850;line-height:1.15}.ename{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mass{font-size:9px;opacity:.8}
+.alkali{background:#f28b72}.alkaline{background:#f3b56c}.metalloid{background:#c5cf67}.nonmetal{background:#4ed0b5}.halogen{background:#65b9f3}.noble{background:#5299f0}.post{background:#8ac6a2}
+.content-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:17px;margin-top:18px}.panel{min-width:0;background:linear-gradient(145deg,#0e2540,#091a2d);border:1px solid var(--line);border-radius:17px;padding:19px;box-shadow:var(--shadow)}.panel h2,.panel h3{margin:0 0 12px}.detail-top{display:flex;gap:16px;align-items:center;padding-bottom:15px;border-bottom:1px solid var(--line)}.big-element{width:108px;height:116px;border-radius:14px;display:grid;place-content:center;text-align:center;color:#061426;flex:none}.big-element .sym{font-size:42px}.big-element .anum{text-align:center;font-size:13px}.detail-top h2{font-size:27px;margin:0}.pill{display:inline-block;padding:3px 10px;border-radius:30px;background:#145b60;color:#b5fff1;font-size:12px;margin:4px 0 7px}.muted{color:var(--muted)}.props{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin-top:12px}.prop{padding:9px 0;border-bottom:1px solid #183955;display:flex;flex-direction:column;gap:2px;min-width:0}.prop span{font-size:11px;color:var(--muted)}.prop strong{font-size:13px;overflow-wrap:anywhere}
+.subgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.subpanel{border:1px solid var(--line);background:#10294580;border-radius:13px;padding:14px;min-width:0}.subpanel h3{font-size:15px}.config{font:700 clamp(15px,2vw,23px)/1.5 ui-monospace,Consolas,monospace;color:#c9e7ff;background:#061326;border:1px solid var(--line);border-radius:10px;padding:13px 8px;text-align:center;overflow-x:auto;direction:ltr}.shells{font-size:12px;color:var(--muted);margin-top:8px}.lewis{min-height:100px;display:grid;place-items:center;background:#061326;border:1px solid var(--line);border-radius:10px;padding:8px}.lewis-symbol{display:grid;grid-template-columns:25px 50px 25px;grid-template-rows:25px 50px 25px;align-items:center;justify-items:center;font-size:23px;font-weight:800}.lewis-symbol .center{font-size:34px}.pair{display:inline-block;width:19px;height:3px;border-radius:4px;background:currentColor}.pair.vertical{width:3px;height:19px}.note{font-size:11px;color:var(--muted);margin:8px 0 0}
+.family-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.family-card{padding:13px;border:1px solid var(--line);border-radius:12px;background:#0a1e33}.family-card h3{font-size:14px;margin:0 0 5px}.family-card p{font-size:12px;color:var(--muted);margin:0}.family-card .count{color:#dceeff;margin-top:7px}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:18px}.compare-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}.compare-row select{width:100%;min-width:0;background:#091c30;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:10px}.compare-results{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.compare-card{background:#091c30;border:1px solid var(--line);border-radius:12px;padding:12px}.compare-card h3{margin:0 0 8px}.compare-card p{font-size:12px;color:var(--muted);margin:4px 0}.quiz-question{font-size:17px;font-weight:700;margin:8px 0 13px}.answers{display:grid;grid-template-columns:1fr 1fr;gap:8px}.answers button{text-align:left}.feedback{min-height:24px;margin-top:10px;font-size:13px;color:var(--mint)}.small-btn{padding:7px 10px;font-size:12px}.guide{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.guide article{border:1px solid var(--line);border-radius:12px;padding:13px;background:#0a1e33}.guide b{display:block;margin-bottom:4px}.guide p{font-size:12px;color:var(--muted);margin:0}
+.credits{text-align:center;margin:25px 0 0;padding:clamp(25px,4vw,48px);border:1px solid #3678a9;background:radial-gradient(ellipse at top,#153a5d,#0c2038 55%,#061326);border-radius:20px}.credits .kicker{font-size:11px;letter-spacing:2px;color:#72c8ff}.credits h2{margin:8px 0 18px}.team-lead{display:inline-block;padding:16px 26px;border:1px solid #57b8ff88;border-radius:14px;background:#16436b55;margin-bottom:13px}.team-lead strong{display:block;font-size:22px}.team-lead small{color:#9ddcff}.credit-list{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.credit-list span{padding:10px 17px;background:#102945;border:1px solid #32648a;border-radius:11px}.footer-note{font-size:11px;color:var(--muted);margin-top:22px}
+.hidden{display:none!important}
+@media(max-width:900px){.content-grid{grid-template-columns:1fr}.tool-grid{grid-template-columns:1fr}}
+@media(max-width:580px){header{position:relative}.brand{width:100%}nav{order:3}.searchbar{width:100%}.searchbar input{width:100%;min-width:0}.hero-stat{width:100%}.stat{flex:1;min-width:0}.props,.subgrid,.family-cards,.compare-results{grid-template-columns:1fr 1fr}.guide{grid-template-columns:1fr}.detail-top h2{font-size:23px}.big-element{width:88px;height:100px}.periodic{min-width:630px}.panel{padding:14px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">
-    <div class="atom">⚛</div>
-    <div>
-      <h1 id="t-title">Periodic Table</h1>
-      <div class="subtitle" id="t-sub">Explore the first 18 elements · Discover their properties</div>
-    </div>
-  </div>
-  <nav>
-    <button class="active" data-jump="table-section" id="nav-table">Periodic Table</button>
-    <button data-jump="families-section" id="nav-fam">Families</button>
-    <button data-jump="detail-panel" id="nav-prop">Properties</button>
-    <button id="lang-btn" style="background:#16436b;border-color:var(--accent);">العربية</button>
-  </nav>
-  <input id="search" placeholder="Search element (e.g. H, He, Oxygen…)" aria-label="Search elements">
+ <div class="brand"><div class="atom" aria-hidden="true">⚛</div><div><h1 id="title">Periodic Table</h1><div class="subtitle" id="subtitle">Chemistry Explorer · The first 18 elements</div></div></div>
+ <nav aria-label="Main navigation">
+  <button class="active" data-jump="table-section" id="nav-table">Periodic Table</button>
+  <button data-jump="families-section" id="nav-fam">Families</button>
+  <button data-jump="detail-panel" id="nav-prop">Properties</button>
+  <button data-jump="tools-section" id="nav-tools">Learning tools</button>
+  <button id="lang-btn">العربية</button>
+ </nav>
 </header>
 <main>
-<section class="intro">
-  <div>
-    <h2 id="t-explore">Explore the elements</h2>
-    <div class="muted" id="t-explined">Select any element to explore its properties, electron configuration, and Lewis dot structure with paired lines and single dots.</div>
-  </div>
-  <div class="muted" id="t-groups">Groups: α–η · Periods: α–γ</div>
-</section>
-<div class="legend" id="legend"></div>
-<section id="table-section" class="table-wrap"><div id="periodic" class="periodic"></div></section>
-<div class="content-grid">
-<section class="panel" id="detail-panel">
- <div class="detail-top">
-   <div id="big-element" class="big-element nonmetal">
-     <div class="anum">8</div>
-     <div class="sym">O</div>
-     <div>Oxygen</div>
+ <section class="hero">
+  <div><div class="eyebrow" id="eyebrow">Explore · Understand · Discover</div><h2 id="hero-title">Meet the building blocks<br>of matter.</h2><p id="hero-desc">Explore the first 18 chemical elements through an interactive periodic table. Discover their properties, electron arrangements, chemical families and Lewis symbols.</p></div>
+  <div class="hero-stat"><div class="stat"><strong>18</strong><span id="stat-elements">Elements</span></div><div class="stat"><strong>8</strong><span id="stat-groups">Groups</span></div><div class="stat"><strong>3</strong><span id="stat-periods">Periods</span></div></div>
+ </section>
+ <section id="table-section">
+  <div class="section-head"><div><h2 id="table-title">The periodic table</h2><p id="table-desc">Select an element to open its scientific profile.</p></div><div class="searchbar"><input id="search" type="search" placeholder="Search by name, symbol or atomic number…" aria-label="Search elements"><button class="small-btn" id="clear-search">Clear</button></div></div>
+  <div class="legend" id="legend"></div>
+  <div class="table-shell"><div class="table-wrap"><div id="periodic" class="periodic" aria-label="Interactive periodic table of the first 18 elements"></div></div></div>
+ </section>
+ <div class="content-grid">
+  <section class="panel" id="detail-panel" aria-live="polite">
+   <div class="section-head" style="margin-top:0"><div><h2 id="detail-title">Element profile</h2><p id="detail-desc">Scientific properties and atomic structure</p></div></div>
+   <div class="detail-top"><div id="big-element" class="big-element nonmetal"><div class="anum">8</div><div class="sym">O</div><div>Oxygen</div></div><div><h2 id="el-name">Oxygen</h2><span id="el-family" class="pill">Other nonmetal</span><div class="muted"><span id="lab-number">Atomic number</span>: <strong id="el-num">8</strong></div><div class="muted"><span id="lab-mass">Atomic mass</span>: <strong id="el-mass">15.999 u</strong></div></div></div>
+   <div class="props" id="props"></div>
+   <div class="subgrid">
+    <div class="subpanel"><h3 id="config-title">Electron shells</h3><div id="config" class="config">K² L⁶</div><div id="shells" class="shells"></div></div>
+    <div class="subpanel"><h3 id="lewis-title">Lewis dot symbol</h3><div id="lewis" class="lewis"></div><p class="note" id="lewis-note">Dots represent valence electrons; paired electrons are shown together.</p></div>
    </div>
-   <div>
-     <h2 id="el-name">Oxygen</h2>
-     <span id="el-family" class="pill">Nonmetal</span>
-     <div class="muted"><span id="t-anum">Atomic number</span>: <strong id="el-num">8</strong></div>
-     <div class="muted"><span id="t-amass">Atomic mass</span>: <strong id="el-mass">15.999 u</strong></div>
-   </div>
+  </section>
+  <section class="panel" id="families-section"><h2 id="families-title">Chemical families</h2><p class="muted" id="families-desc" style="font-size:12px;margin-top:-5px">The highlighted families represented among the first 18 elements.</p><div class="family-cards" id="family-cards"></div></section>
  </div>
- <div class="props" id="props"></div>
- <div class="subgrid">
-   <div class="subpanel">
-     <h3 id="t-config-title">Shell distribution (K, L, M)</h3>
-     <div id="config" class="config"></div>
-     <p class="note" id="shells"></p>
-   </div>
-   <div class="subpanel">
-     <h3 id="t-lewis-title">Lewis dot structure</h3>
-     <div id="lewis" class="lewis"></div>
-     <p class="note" id="t-lewis-note">Lewis symbol: short lines show paired valence electrons; dots show unpaired valence electrons.</p>
-   </div>
- </div>
-</section>
-<section class="panel" id="families-section">
-  <h2 id="t-fam-title">Chemical families</h2>
-  <div class="family-cards" id="family-cards"></div>
-</section>
-</div>
-<footer class="credits">
-  <div class="team-kicker" id="t-team-kicker">THE PEOPLE BEHIND THE PROJECT</div>
-  <h2 style="font-size:clamp(26px,4vw,40px);margin:10px 0 0">⚛ <span id="t-credits-title">Project Team & Credits</span></h2>
-  <div class="team-lead"><strong>Zeyour Mohammed Amine</strong><small id="t-team-role">Head of the Project</small></div>
-  <div class="credit-list">
-    <span><strong>Beziane Jacob</strong></span>
-    <span><strong>Helassa Rostom</strong></span>
-    <span><strong>Cia Anes</strong></span>
-  </div>
-</footer>
+ <section class="tool-grid" id="tools-section">
+  <section class="panel"><div class="section-head" style="margin-top:0"><div><h2 id="compare-title">Compare two elements</h2><p id="compare-desc">Choose two elements to compare their key properties.</p></div></div><div class="compare-row"><select id="compare-a" aria-label="First element"></select><span>VS</span><select id="compare-b" aria-label="Second element"></select></div><div class="compare-results" id="compare-results"></div></section>
+  <section class="panel"><div class="section-head" style="margin-top:0"><div><h2 id="quiz-title">Quick knowledge check</h2><p id="quiz-desc">Test what you have learned about the elements.</p></div><button class="small-btn" id="new-question">New question</button></div><div class="quiz-question" id="question">Which element has atomic number 8?</div><div class="answers" id="answers"></div><div class="feedback" id="feedback" aria-live="polite"></div><div class="note" id="score">Score: 0 / 0</div></section>
+ </section>
+ <section class="panel" style="margin-top:18px"><h2 id="guide-title">How to explore</h2><div class="guide" id="guide-cards"></div><p class="note" id="data-note">Educational reference: values are rounded where appropriate. Physical properties may depend on allotrope and measurement conditions.</p></section>
+ <footer class="credits">
+  <div class="kicker" id="team-kicker">THE PEOPLE BEHIND THE PROJECT</div><h2 id="credits-title">Project Team & Credits</h2>
+  <div class="team-lead"><strong>Zeyour Mohammed Amine</strong><small id="team-role">Project Lead</small></div>
+  <div class="credit-list"><span><strong>Beziane Jacob</strong></span><span><strong>Helassa Rostom</strong></span><span><strong>Cia Anes</strong></span></div>
+  <div class="footer-note" id="footer-note">An educational project dedicated to exploring chemistry through curiosity and interactive learning.</div>
+ </footer>
 </main>
 <script>
-// عناصر الـ 18 الأولى مصنفة على 8 أعمدة (1 إلى 8)
-// [n, symbol, name, mass, col(1-8), period(1-3), family]
-const raw = [
-  [1,'H','Hydrogen',1.008,1,1,'nonmetal'],[2,'He','Helium',4.0026,8,1,'noble'],
-  [3,'Li','Lithium',6.94,1,2,'alkali'],[4,'Be','Beryllium',9.0122,2,2,'alkaline'],[5,'B','Boron',10.81,3,2,'metalloid'],[6,'C','Carbon',12.011,4,2,'nonmetal'],[7,'N','Nitrogen',14.007,5,2,'nonmetal'],[8,'O','Oxygen',15.999,6,2,'nonmetal'],[9,'F','Fluorine',18.998,7,2,'halogen'],[10,'Ne','Neon',20.180,8,2,'noble'],
-  [11,'Na','Sodium',22.990,1,3,'alkali'],[12,'Mg','Magnesium',24.305,2,3,'alkaline'],[13,'Al','Aluminium',26.982,3,3,'post'],[14,'Si','Silicon',28.085,4,3,'metalloid'],[15,'P','Phosphorus',30.974,5,3,'nonmetal'],[16,'S','Sulfur',32.06,6,3,'nonmetal'],[17,'Cl','Chlorine',35.45,7,3,'halogen'],[18,'Ar','Argon',39.948,8,3,'noble']
+'use strict';
+const raw=[
+{n:1,s:'H',en:'Hydrogen',ar:'الهيدروجين',mass:'1.008',g:1,p:1,f:'nonmetal',state:'Gas',density:'0.0899 g/L',mp:'−259.16 °C',bp:'−252.87 °C',ox:'+1, −1',eneg:'2.20',shell:[1],val:1},
+{n:2,s:'He',en:'Helium',ar:'الهيليوم',mass:'4.0026',g:8,p:1,f:'noble',state:'Gas',density:'0.1785 g/L',mp:'−272.20 °C',bp:'−268.93 °C',ox:'0',eneg:'—',shell:[2],val:2},
+{n:3,s:'Li',en:'Lithium',ar:'الليثيوم',mass:'6.94',g:1,p:2,f:'alkali',state:'Solid',density:'0.534 g/cm³',mp:'180.54 °C',bp:'1342 °C',ox:'+1',eneg:'0.98',shell:[2,1],val:1},
+{n:4,s:'Be',en:'Beryllium',ar:'البيريليوم',mass:'9.0122',g:2,p:2,f:'alkaline',state:'Solid',density:'1.85 g/cm³',mp:'1287 °C',bp:'2469 °C',ox:'+2',eneg:'1.57',shell:[2,2],val:2},
+{n:5,s:'B',en:'Boron',ar:'البورون',mass:'10.81',g:3,p:2,f:'metalloid',state:'Solid',density:'2.34 g/cm³',mp:'2076 °C',bp:'3927 °C',ox:'+3',eneg:'2.04',shell:[2,3],val:3},
+{n:6,s:'C',en:'Carbon',ar:'الكربون',mass:'12.011',g:4,p:2,f:'nonmetal',state:'Solid',density:'2.267 g/cm³ (graphite)',mp:'~3550 °C',bp:'~4827 °C',ox:'−4, +2, +4',eneg:'2.55',shell:[2,4],val:4},
+{n:7,s:'N',en:'Nitrogen',ar:'النيتروجين',mass:'14.007',g:5,p:2,f:'nonmetal',state:'Gas',density:'1.251 g/L',mp:'−210.00 °C',bp:'−195.79 °C',ox:'−3, +1, +2, +3, +4, +5',eneg:'3.04',shell:[2,5],val:3},
+{n:8,s:'O',en:'Oxygen',ar:'الأكسجين',mass:'15.999',g:6,p:2,f:'nonmetal',state:'Gas',density:'1.429 g/L',mp:'−218.79 °C',bp:'−182.96 °C',ox:'−2, −1, +2',eneg:'3.44',shell:[2,6],val:2},
+{n:9,s:'F',en:'Fluorine',ar:'الفلور',mass:'18.998',g:7,p:2,f:'halogen',state:'Gas',density:'1.696 g/L',mp:'−219.67 °C',bp:'−188.11 °C',ox:'−1',eneg:'3.98',shell:[2,7],val:1},
+{n:10,s:'Ne',en:'Neon',ar:'النيون',mass:'20.180',g:8,p:2,f:'noble',state:'Gas',density:'0.900 g/L',mp:'−248.59 °C',bp:'−246.08 °C',ox:'0',eneg:'—',shell:[2,8],val:0},
+{n:11,s:'Na',en:'Sodium',ar:'الصوديوم',mass:'22.990',g:1,p:3,f:'alkali',state:'Solid',density:'0.968 g/cm³',mp:'97.79 °C',bp:'883 °C',ox:'+1',eneg:'0.93',shell:[2,8,1],val:1},
+{n:12,s:'Mg',en:'Magnesium',ar:'المغنيسيوم',mass:'24.305',g:2,p:3,f:'alkaline',state:'Solid',density:'1.738 g/cm³',mp:'650 °C',bp:'1090 °C',ox:'+2',eneg:'1.31',shell:[2,8,2],val:2},
+{n:13,s:'Al',en:'Aluminium',ar:'الألومنيوم',mass:'26.982',g:3,p:3,f:'post',state:'Solid',density:'2.70 g/cm³',mp:'660.32 °C',bp:'2519 °C',ox:'+3',eneg:'1.61',shell:[2,8,3],val:3},
+{n:14,s:'Si',en:'Silicon',ar:'السيليكون',mass:'28.085',g:4,p:3,f:'metalloid',state:'Solid',density:'2.329 g/cm³',mp:'1414 °C',bp:'3265 °C',ox:'−4, +2, +4',eneg:'1.90',shell:[2,8,4],val:4},
+{n:15,s:'P',en:'Phosphorus',ar:'الفوسفور',mass:'30.974',g:5,p:3,f:'nonmetal',state:'Solid',density:'1.82 g/cm³ (white)',mp:'44.1 °C (white)',bp:'280.5 °C (white)',ox:'−3, +3, +5',eneg:'2.19',shell:[2,8,5],val:3},
+{n:16,s:'S',en:'Sulfur',ar:'الكبريت',mass:'32.06',g:6,p:3,f:'nonmetal',state:'Solid',density:'2.07 g/cm³',mp:'115.21 °C',bp:'444.6 °C',ox:'−2, +2, +4, +6',eneg:'2.58',shell:[2,8,6],val:2},
+{n:17,s:'Cl',en:'Chlorine',ar:'الكلور',mass:'35.45',g:7,p:3,f:'halogen',state:'Gas',density:'3.2 g/L',mp:'−101.5 °C',bp:'−34.04 °C',ox:'−1, +1, +3, +5, +7',eneg:'3.16',shell:[2,8,7],val:1},
+{n:18,s:'Ar',en:'Argon',ar:'الأرغون',mass:'39.948',g:8,p:3,f:'noble',state:'Gas',density:'1.784 g/L',mp:'−189.34 °C',bp:'−185.85 °C',ox:'0',eneg:'—',shell:[2,8,8],val:0}
 ];
-
-const famNames={alkali:'Alkali Metals',alkaline:'Alkaline Earth Metals',halogen:'Halogens',noble:'Noble Gases',post:'Other element',metalloid:'Other element',nonmetal:'Other element'};
-const greekGroups=['I','II','III','IV','V','VI','VII','VIII'];
-const greekPeriods=['I','II','III'];
-const famTraits={
-  alkali:'Column I (the first column): alkali metals are soft, highly reactive metals. They tend to lose one outer electron and form +1 ions.',
-  alkaline:'Column II (the second column): alkaline earth metals are reactive metals with two outer-shell electrons. They tend to lose two electrons and form +2 ions.',
-  halogen:'Column VII (the seventh column): halogens are reactive nonmetals with seven outer-shell electrons. They tend to gain one electron to complete an octet.',
-  noble:'Column VIII (the eighth column): noble gases have complete outer shells—two electrons for helium and eight for the others—so they are generally very unreactive.'
+const fam={
+alkali:{en:'Alkali metals',ar:'الفلزات القلوية',desc:'Soft, reactive metals with one outer-shell electron. They commonly form +1 ions.',arDesc:'فلزات لينة ونشطة، لها إلكترون واحد في غلافها الخارجي، وتميل إلى تكوين أيونات +1.'},
+alkaline:{en:'Alkaline earth metals',ar:'الفلزات القلوية الترابية',desc:'Reactive metals with two outer-shell electrons; they commonly form +2 ions.',arDesc:'فلزات نشطة لها إلكترونان في غلافها الخارجي، وتميل إلى تكوين أيونات +2.'},
+halogen:{en:'Halogens',ar:'الهالوجينات',desc:'Reactive nonmetals with seven outer-shell electrons; they often form −1 ions.',arDesc:'لافلزات نشطة لها سبعة إلكترونات خارجية، وتميل إلى اكتساب إلكترون وتكوين أيونات −1.'},
+noble:{en:'Noble gases',ar:'الغازات النبيلة',desc:'Their outer electron shells are complete, so they are generally very unreactive.',arDesc:'أغلفتها الخارجية مكتملة، لذلك تكون قليلة التفاعل كيميائياً.'},
+metalloid:{en:'Metalloids',ar:'أشباه الفلزات',desc:'Elements with properties between metals and nonmetals; useful semiconductor behaviour is common.',arDesc:'عناصر تجمع بعض خصائص الفلزات واللافلزات، ويُستخدم بعضها في أشباه الموصلات.'},
+nonmetal:{en:'Other nonmetals',ar:'لافلزات أخرى',desc:'A varied group of elements that generally do not show typical metallic properties.',arDesc:'مجموعة متنوعة من العناصر التي لا تُظهر عادة الخصائص الفلزية التقليدية.'},
+post:{en:'Post-transition metal',ar:'فلز بعد انتقالي',desc:'Aluminium is a lightweight metal with good electrical and thermal conductivity.',arDesc:'الألومنيوم فلز خفيف وموصل جيد للحرارة والكهرباء.'}
 };
-const colors={alkali:'#f28b72',alkaline:'#f3b56c',post:'#8ac6a2',metalloid:'#c5cf67',nonmetal:'#4ed0b5',halogen:'#65b9f3',noble:'#5299f0'};
-
-const special={
-  1:{state:'Gas',density:'0.0899 g/L',mp:'−259.16 °C',bp:'−252.87 °C',ox:'+1',en:2.20},
-  2:{state:'Gas',density:'0.1785 g/L',mp:'−272.2 °C',bp:'−268.93 °C',ox:'0',en:null},
-  3:{state:'Solid',density:'0.968 g/cm³',mp:'97.79 °C',bp:'883 °C',ox:'+1',en:0.93},
-  4:{state:'Solid',density:'1.738 g/cm³',mp:'650 °C',bp:'1,090 °C',ox:'+2',en:1.31},
-  5:{state:'Solid',density:'2.08 g/cm³',mp:'2,076 °C',bp:'3,927 °C',ox:'+3',en:2.04},
-  6:{state:'Solid',density:'2.267 g/cm³ (graphite)',mp:'~3,550 °C',bp:'~4,827 °C',ox:'/',en:2.55},
-  7:{state:'Gas',density:'1.251 g/L',mp:'−210.0 °C',bp:'−195.8 °C',ox:'-3',en:3.04},
-  8:{state:'Gas',density:'1.429 g/L',mp:'−218.79 °C',bp:'−182.96 °C',ox:'−2',en:3.44},
-  9:{state:'Gas',density:'1.696 g/L',mp:'−219.67 °C',bp:'−188.11 °C',ox:'−1',en:3.98},
-  10:{state:'Gas',density:'0.900 g/L',mp:'−248.59 °C',bp:'−246.08 °C',ox:'0',en:null},
-  11:{state:'Solid',density:'0.968 g/cm³',mp:'97.79 °C',bp:'883 °C',ox:'+1',en:0.93},
-  12:{state:'Solid',density:'1.738 g/cm³',mp:'650 °C',bp:'1,090 °C',ox:'+2',en:1.31},
-  13:{state:'Solid',density:'2.70 g/cm³',mp:'660.32 °C',bp:'2,519 °C',ox:'+3',en:1.61},
-  14:{state:'Solid',density:'2.329 g/cm³',mp:'1,414 °C',bp:'3,265 °C',ox:'/',en:1.90},
-  15:{state:'Solid',density:'1.82 g/cm³',mp:'44.1 °C',bp:'280.5 °C',ox:'−3',en:2.19},
-  16:{state:'Solid',density:'2.07 g/cm³',mp:'115.21 °C',bp:'444.6 °C',ox:'−2',en:2.58},
-  17:{state:'Gas',density:'3.2 g/L',mp:'−101.5 °C',bp:'−34.04 °C',ox:'−1',en:3.16},
-  18:{state:'Gas',density:'1.784 g/L',mp:'−189.34 °C',bp:'−185.85 °C',ox:'0',en:null}
+const colors={alkali:'#f28b72',alkaline:'#f3b56c',metalloid:'#c5cf67',nonmetal:'#4ed0b5',halogen:'#65b9f3',noble:'#5299f0',post:'#8ac6a2'};
+const tr={
+en:{title:'Periodic Table',subtitle:'Chemistry Explorer · The first 18 elements',table:'Periodic Table',families:'Families',properties:'Properties',tools:'Learning tools',eyebrow:'Explore · Understand · Discover',hero:'Meet the building blocks<br>of matter.',heroDesc:'Explore the first 18 chemical elements through an interactive periodic table. Discover their properties, electron arrangements, chemical families and Lewis symbols.',elements:'Elements',groups:'Groups',periods:'Periods',tableTitle:'The periodic table',tableDesc:'Select an element to open its scientific profile.',search:'Search by name, symbol or atomic number…',clear:'Clear',detail:'Element profile',detailDesc:'Scientific properties and atomic structure',number:'Atomic number',mass:'Atomic mass',state:'State at 25°C',density:'Density',melting:'Melting point',boiling:'Boiling point',classification:'Classification',valency:'Common valency (octet rule)',oxidation:'Common oxidation states',electro:'Electronegativity (Pauling)',config:'Electron shells',orbital:'Orbital configuration',lewis:'Lewis dot symbol',lewisNote:'Dots represent valence electrons; paired electrons are shown together.',familyTitle:'Chemical families',familyDesc:'The highlighted families represented among the first 18 elements.',compare:'Compare two elements',compareDesc:'Choose two elements to compare their key properties.',quiz:'Quick knowledge check',quizDesc:'Test what you have learned about the elements.',newQuestion:'New question',guide:'How to explore',data:'Educational reference: values are rounded where appropriate. Physical properties may depend on allotrope and measurement conditions.',team:'THE PEOPLE BEHIND THE PROJECT',credits:'Project Team & Credits',role:'Project Lead',footer:'An educational project dedicated to exploring chemistry through curiosity and interactive learning.',choose:'Choose an element',compareLabel:'Compare',score:'Score',correct:'Correct! Well done.',wrong:'Not quite. The correct answer is ',select:'Select an element',noMatch:'No matching element found.',steps:[['1. Select an element','Choose a tile in the table or search by name, symbol or atomic number.'],['2. Explore its profile','Review its physical properties, valency and oxidation states.'],['3. Understand its electrons','Use shell distribution and the Lewis symbol to study valence electrons.']]},
+ar:{title:'الجدول الدوري',subtitle:'مستكشف الكيمياء · العناصر الثمانية عشر الأولى',table:'الجدول الدوري',families:'العائلات',properties:'الخصائص',tools:'أدوات التعلم',eyebrow:'استكشف · افهم · اكتشف',hero:'تعرّف على لبنات<br>بناء المادة.',heroDesc:'استكشف العناصر الكيميائية الثمانية عشر الأولى من خلال جدول دوري تفاعلي. اكتشف خصائصها وتوزيع إلكتروناتها وعائلاتها الكيميائية وتمثيل لويس.',elements:'عنصر',groups:'مجموعة',periods:'دورات',tableTitle:'الجدول الدوري',tableDesc:'اختر عنصراً لعرض بطاقته العلمية.',search:'ابحث بالاسم أو الرمز أو العدد الذري…',clear:'مسح',detail:'بطاقة العنصر',detailDesc:'الخصائص العلمية والبنية الذرية',number:'العدد الذري',mass:'الكتلة الذرية',state:'الحالة عند 25°C',density:'الكثافة',melting:'درجة الانصهار',boiling:'درجة الغليان',classification:'التصنيف',valency:'التكافؤ الشائع (قاعدة الثمانية)',oxidation:'حالات الأكسدة الشائعة',electro:'السالبية الكهربائية (Pauling)',config:'التوزيع حسب الأغلفة',orbital:'التوزيع المداري',lewis:'رمز لويس النقطي',lewisNote:'تمثل النقاط إلكترونات التكافؤ، ويُمثّل الزوج الإلكتروني معاً.',familyTitle:'العائلات الكيميائية',familyDesc:'العائلات الممثلة ضمن العناصر الثمانية عشر الأولى.',compare:'قارن بين عنصرين',compareDesc:'اختر عنصرين لمقارنة خصائصهما الأساسية.',quiz:'اختبر معلوماتك',quizDesc:'تحقق مما تعلمته عن العناصر.',newQuestion:'سؤال جديد',guide:'كيفية الاستكشاف',data:'مرجع تعليمي: قُرّبت بعض القيم عند الحاجة. وقد تختلف الخصائص الفيزيائية حسب التآصل وظروف القياس.',team:'فريق العمل',credits:'فريق المشروع والشكر',role:'رئيس المشروع',footer:'مشروع تعليمي لاستكشاف الكيمياء من خلال الفضول والتعلم التفاعلي.',choose:'اختر عنصراً',compareLabel:'مقارنة',score:'النتيجة',correct:'إجابة صحيحة! أحسنت.',wrong:'ليست الإجابة الصحيحة. الإجابة هي ',select:'اختر عنصراً',noMatch:'لم يتم العثور على عنصر مطابق.',steps:[['1. اختر عنصراً','اختر مربعاً في الجدول أو ابحث بالاسم أو الرمز أو العدد الذري.'],['2. استكشف البطاقة','راجع الخصائص الفيزيائية والتكافؤ وحالات الأكسدة.'],['3. افهم إلكتروناته','استخدم توزيع الأغلفة ورمز لويس لدراسة إلكترونات التكافؤ.']]}
 };
-
-function outerElectrons(e){const [n,s,name,m,col]=e;if(s==='He')return 2;return col;}
-function valency(e){const [n,s,name,m,col]=e;if(s==='He'||s==='Ne'||s==='Ar')return 0;if(s==='H')return 1;const outer=outerElectrons(e);return outer<=4?outer:8-outer;}
-function electronConfig(z){const order=[[1,2,'1s'],[2,2,'2s'],[3,6,'2p'],[4,2,'3s'],[5,6,'3p']];let left=z,out=[];for(const [idx,cap,orb] of order){if(left<=0)break;let fill=Math.min(cap,left);out.push(orb+'<sup>'+fill+'</sup>');left-=fill}return out.join(' ')}
-function shellConfig(z){let shells=[2,8,8],names=['K','L','M'],out=[];for(let i=0;i<shells.length&&z>0;i++){let a=Math.min(shells[i],z);out.push('<span aria-label="'+names[i]+' shell: '+a+' electrons">'+names[i]+'<sup>'+a+'</sup></span>');z-=a}return out.join('')}
-function getData(e){let [n,s,name,m,g,p,f]=e;let sp=special[n]||{};let v=outerElectrons(e);let ox=sp.ox||'Variable';let phase=sp.state||'Solid';return {n,s,name,m,g,p,f,sp,v,ox,phase}}
-function make(tag,cls,text){let x=document.createElement(tag);if(cls)x.className=cls;if(text!==undefined)x.textContent=text;return x}
-
-const periodic=document.getElementById('periodic');
-
-// ترويسة الأعمدة 8
-let emptyHeader=make('div','groupnum','');
-periodic.appendChild(emptyHeader);
-for(let c=1;c<=8;c++){
-  let d=make('div','groupnum',greekGroups[c-1]);
-  d.style.gridColumn=c+1;
-  d.style.gridRow=1;
-  periodic.appendChild(d);
+let lang='en',selected=8,score=0,answered=0,currentQuestion=null;
+const $=id=>document.getElementById(id);
+function elName(e){return lang==='ar'?e.ar:e.en}
+function famName(f){return lang==='ar'?fam[f].ar:fam[f].en}
+function make(tag,cls,txt){const x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=txt;return x}
+function shellText(e){return e.shell.map((v,i)=>String.fromCharCode(75+i)+'⁽'+v+'⁾').join('  ')}
+function orbitalText(z){const orbitals=[['1s',2],['2s',2],['2p',6],['3s',2],['3p',6]];let left=z,out=[];for(const [name,cap] of orbitals){if(!left)break;const fill=Math.min(cap,left);out.push(name+fill);left-=fill}return out.join('  ')}
+function renderTable(){
+ const root=$('periodic');root.innerHTML='';
+ root.appendChild(make('div','groupnum',''));
+ for(let c=1;c<=8;c++){const d=make('div','groupnum',String(c));d.style.gridColumn=c+1;d.style.gridRow=1;root.appendChild(d)}
+ for(let r=1;r<=3;r++){const d=make('div','periodnum',String(r));d.style.gridColumn=1;d.style.gridRow=r+1;root.appendChild(d)}
+ raw.forEach(e=>{const b=make('button','element '+e.f);b.style.gridColumn=e.g+1;b.style.gridRow=e.p+1;b.dataset.n=e.n;b.title=e.en+' ('+e.s+')';b.setAttribute('aria-label',e.n+' '+e.en);b.innerHTML='<div class="anum">'+e.n+'</div><div class="sym">'+e.s+'</div><div class="ename">'+elName(e)+'</div><div class="mass">'+e.mass+'</div>';b.addEventListener('click',()=>showElement(e.n));root.appendChild(b)})
 }
-
-// أرقام الدورات 3
-for(let r=1;r<=3;r++){
-  let d=make('div','periodnum',greekPeriods[r-1]);
-  d.style.gridColumn=1;
-  d.style.gridRow=r+1;
-  periodic.appendChild(d);
+function renderLegendAndFamilies(){
+ $('legend').innerHTML='';$('family-cards').innerHTML='';
+ ['alkali','alkaline','metalloid','nonmetal','halogen','noble','post'].forEach(f=>{
+  const tag=make('span','tag');tag.innerHTML='<i class="swatch" style="background:'+colors[f]+'"></i>';tag.appendChild(document.createTextNode(famName(f)));$('legend').appendChild(tag);
+  const members=raw.filter(e=>e.f===f);if(!members.length)return;
+  const card=make('article','family-card');const h=make('h3','',famName(f));card.appendChild(h);card.appendChild(make('p','',lang==='ar'?fam[f].arDesc:fam[f].desc));card.appendChild(make('p','count',members.map(elName).join(' · ')));$('family-cards').appendChild(card);
+ })
 }
-
-// إدراج العناصر في الجدول المصغر مكون من 8 أعمدة
-raw.forEach(e=>{
-  let [n,s,name,m,col,row,f]=e;
-  let el=make('button','element '+f);
-  el.style.gridColumn=col+1;
-  el.style.gridRow=row+1;
-  el.dataset.n=n;
-  el.title=`${name} (${s})`;
-  el.innerHTML=`<div class="anum">${n}</div><div class="sym">${s}</div><div class="ename">${name}</div><div class="mass">${m}</div>`;
-  el.addEventListener('click',()=>showElement(n));
-  periodic.appendChild(el);
-});
-
-const famOrder=['alkali','alkaline','halogen','noble'];
-const legend=document.getElementById('legend');
-const cards=document.getElementById('family-cards'); // Required container for the four family cards
-let currentLang='en';
-const translations={
-  en:{
-    title:"Periodic Table", sub:"Explore the first 18 elements · Discover their properties",
-    navTable:"Periodic Table", navFam:"Families", navProp:"Properties",
-    explore:"Explore the elements", explined:"Select any element to explore its properties, electron configuration, and Lewis dot structure with paired lines and single dots.",
-    groups:"Columns: I–VIII · Rows: I–III", anum:"Atomic number", amass:"Atomic mass",
-    configTitle:"Electron distribution by shells", shells:"Orbital configuration: ",
-    lewisTitle:"Lewis dot structure", lewisNote:"Lewis symbol: short lines show paired valence electrons; dots show unpaired valence electrons.",
-    famTitle:"Chemical families", howTitle:"How to use this table",
-    s1t:"1. Choose an element", s1d:"Click a tile or use search to find an element from Hydrogen to Argon by name, symbol, or atomic number.",
-    s2t:"2. Compare properties", s2d:"Review its state at 25°C, density, melting and boiling points, oxidation states, and electronegativity.",
-    s3t:"3. Explore its electrons", s3d:"Examine electron shells and view the Lewis symbol showing paired electrons as lines and unpaired as dots.",
-    dataNote:"Data note: values reflect standard scientific references for educational use.",
-    aboutTitle:"About this project", aboutDesc:"An educational chemistry explorer designed to help students learn the first 18 elements of the periodic table, chemical families, atomic structure, and key element properties through an interactive interface.",
-    sourcesTitle:"Data sources", sourcesDesc:"Cross-check detailed scientific values with trusted references such as the Royal Society of Chemistry (RSC) and PubChem.",
-    creditsTitle:"Project Team & Credits", teamKicker:"THE PEOPLE BEHIND THE PROJECT", teamRole:"Head of the Project",
-    langBtn:"العربية",
-    stateLabel:"State at 25°C", densityLabel:"Density", mpLabel:"Melting point", bpLabel:"Boiling point",
-    classLabel:"Classification", valenceLabel:"Valency (duet/octet rule)", oxLabel:"Common oxidation states", enLabel:"Electronegativity (Pauling)"
-  },
-  ar:{
-    title:"الجدول الدوري", sub:"مشروع الفيزياء | الجدول الدوري للعناصر | قسم 1 ج م ع ت 1",
-    navTable:"الجدول الدوري", navFam:"العائلات", navProp:"الخصائص",
-    explore:"استكشف العناصر", explined:"اختر أي عنصر لاستكشاف خصائصه، توزيع المدارات (K, L, M)، (تمثيل لويس خطوط للأزواج ونقاط للإلكترونات المنفردة)",
-    groups:"الأعمدة: I–VIII · الأسطر: I–III", anum:"العدد الذري", amass:"الكتلة الذرية المتوسطة",
-    configTitle:"التوزيع الإلكتروني حسب المدارات", shells:"التوزيع المداري: ",
-    lewisTitle:"تمثيل لويس (Lewis Dot Structure)", lewisNote:"تمثيل لويس: الخطوط القصيرة تمثل أزواج إلكترونات الغلاف الخارجي، والنقاط تمثل الإلكترونات المنفردة.",
-    famTitle:"العائلات الكيميائية", howTitle:"كيفية استخدام هذا الجدول",
-    s1t:"1. اختر عنصرًا", s1d:"انقر على أي مربّع أو استخدم البحث للعثور على أي عنصر من الهيدروجين إلى الأرجون.",
-    s2t:"2. قارن الخصائص", s2d:"راجع الحالة الفيزيائية عند 25°C، الكثافة، درجات الانصهار والغليان، حالات الأكسدة، والسالبية الكهربائية.",
-    s3t:"3. استكشف الإلكترونات", s3d:"اقرأ توزيع المدارات (K, L, M) وشاهد رمز لويس الموضح لأزواج الإلكترونات بخطوط والمنفردة بنقاط.",
-    dataNote:"ملاحظة البيانات: القيم موثوقة ومخصصة للاستخدام التعليمي  وتم مراجعتها من قبلي شخصيا.",
-    aboutTitle:"حول المشروع", aboutDesc:"مشروع كيميائي تعليمي مصمم لمساعدة الطلاب على تعلم العناصر الـ18 الأولى للجدول الدوري والعائلات الكيميائية ",
-    sourcesTitle:"مصادر البيانات", sourcesDesc:"تم مراجعة القيم العلمية مع المراجع الموثوقة مثل الجمعية الملكية للكيمياء و زيور محمد أمين (RSC) وPubChem.",
-    creditsTitle:"فريق العمل والمشروع", teamKicker:"فريق العمل", teamRole:"رئيس المشروع (الباقي سلكوني برك)",
-    langBtn:"English",
-    stateLabel:"الحالة عند 25°C", densityLabel:"الكثافة", mpLabel:"درجة الانصهار", bpLabel:"درجة الغليان",
-    classLabel:"التصنيف", valenceLabel:"التكافؤ (قاعدة الثنائية والثمانية)", oxLabel:"التشرد", enLabel:"السالبية الكهربائية او الكهروسلبية (Pauling)"
-  }
-};
-
-
-const famArabic={alkali:'القلائيات',alkaline:'القلائيات الترابية',halogen:'الهالوجينات',noble:'الغازات النبيلة'};
-const famTraitsArabic={alkali:'العمود I (الأول) — القلائيات: انوية عناصر كيميائية شديدة التفاعل، لها إلكترون واحد في المدار الخارجي، وتميل إلى فقده لتكوين أيون موجب شحنته +1.',alkaline:'العمود II (الثاني) — القلائيات الترابية: انوية عناصر كيميائية لها إلكترونان في المدار الخارجي، وتميل إلى فقدهما لتكوين أيون موجب شحنته +2.',halogen:'العمود VII (السابع) — الهالوجينات: انوية عناصر كيميائية لها سبعة إلكترونات في المدار الخارجي، وتميل إلى اكتساب إلكترون واحد لإكمال الثمانية.',noble:'العمود VIII (الثامن) — الغازات النبيلة: غازات مدارها الخارجي مشبع؛ للهيليوم إلكترونان وفق قاعدة الثنائية، وللبقية ثمانية إلكترونات وفق قاعدة الثمانية، لذلك تكون قليلة التفاعل.'};
-function familyName(f){return currentLang==='ar'?(famArabic[f]||'—'):(famNames[f]||'—');}
-function renderFamilies(){
-  legend.innerHTML=''; cards.innerHTML='';
-  famOrder.forEach(f=>{
-    let tag=make('span','tag'); tag.innerHTML=`<i class="swatch" style="background:${colors[f]}"></i>${familyName(f)}`; legend.appendChild(tag);
-    let c=make('article','family-card'); let count=raw.filter(e=>e[6]===f).length;
-    c.innerHTML=`<h3><i class="swatch" style="background:${colors[f]};margin-right:8px"></i>${familyName(f)}</h3><p>${currentLang==='ar'?famTraitsArabic[f]:famTraits[f]}</p><p style="margin-top:8px;color:#d7e9ff">${count} ${currentLang==='ar'?'عناصر':'elements'}</p>`; cards.appendChild(c);
-  });
+function renderLewis(e){
+ const val=e.val;const sides=[0,0,0,0];for(let i=0;i<val;i++){const side=i%4;if(sides[side]===0)sides[side]=1;else sides[side]=2}
+ if(e.s==='He')sides[0]=2;
+ const token=(n,vertical)=>n===1?'•':n===2?'<i class="pair '+(vertical?'vertical':'')+'"></i>':'';
+ $('lewis').innerHTML='<div class="lewis-symbol"><div style="grid-column:2;grid-row:1">'+token(sides[0],false)+'</div><div style="grid-column:1;grid-row:2">'+token(sides[3],true)+'</div><div class="center" style="grid-column:2;grid-row:2">'+e.s+'</div><div style="grid-column:3;grid-row:2">'+token(sides[1],true)+'</div><div style="grid-column:2;grid-row:3">'+token(sides[2],false)+'</div></div>';
 }
-
-function updateLanguage(){
-  let t = translations[currentLang];
-  document.documentElement.lang = currentLang;
-  document.documentElement.dir = currentLang==='ar'?'rtl':'ltr';
-  document.getElementById('t-title').textContent = t.title;
-  document.getElementById('t-sub').textContent = t.sub;
-  document.getElementById('nav-table').textContent = t.navTable;
-  document.getElementById('nav-fam').textContent = t.navFam;
-  document.getElementById('nav-prop').textContent = t.navProp;
-  document.getElementById('t-explore').textContent = t.explore;
-  document.getElementById('t-explined').textContent = t.explined;
-  document.getElementById('t-groups').textContent = t.groups;
-  document.getElementById('t-anum').textContent = t.anum;
-  document.getElementById('t-amass').textContent = t.amass;
-  document.getElementById('t-config-title').textContent = t.configTitle;
-  document.getElementById('t-lewis-title').textContent = t.lewisTitle;
-  document.getElementById('t-lewis-note').textContent = t.lewisNote;
-  document.getElementById('t-fam-title').textContent = t.famTitle;
-  document.getElementById('t-credits-title').textContent = t.creditsTitle;
-  document.getElementById('t-team-kicker').textContent=t.teamKicker;
-  document.getElementById('t-team-role').textContent=t.teamRole;
-  document.getElementById('periodic').style.direction='ltr';
-  renderFamilies();
-  document.getElementById('lang-btn').textContent = t.langBtn;
-  document.getElementById('search').placeholder = currentLang==='ar'?'البحث عن عنصر (مثل: H, He, Oxygen…)':'Search element (e.g. H, He, Oxygen…)';
-  if(window.selectedElNum) showElement(window.selectedElNum);
-}
-
-document.getElementById('lang-btn').addEventListener('click',()=>{
-  currentLang = currentLang==='en'?'ar':'en';
-  updateLanguage();
-});
-
 function showElement(n){
-  window.selectedElNum = n;
-  let e=getData(raw.find(x=>x[0]===n));
-  let t = translations[currentLang];
-  document.querySelectorAll('.element').forEach(x=>x.classList.toggle('selected',+x.dataset.n===n));
-  
-  let big=document.getElementById('big-element');
-  big.className='big-element '+e.f;
-  big.innerHTML=`<div class="anum">${e.n}</div><div class="sym">${e.s}</div><div>${e.name}</div>`;
-  
-  document.getElementById('el-name').textContent = e.name;
-  document.getElementById('el-family').textContent = familyName(e.f);
-  document.getElementById('el-num').textContent = e.n;
-  document.getElementById('el-mass').textContent = e.m+' u';
-  
-  let props=[
-    [t.stateLabel, e.phase],
-    [t.densityLabel, e.sp.density || 'Not available'],
-    [t.mpLabel, e.sp.mp || 'Not available'],
-    [t.bpLabel, e.sp.bp || 'Not available'],
-    [t.classLabel, familyName(e.f)],
-    [t.valenceLabel, valency(raw.find(x=>x[0]===n))],
-    [t.oxLabel, e.ox],
-    [t.enLabel, e.sp.en ?? 'Unavailable']
-  ];
-  
-  let box=document.getElementById('props');
-  box.innerHTML='';
-  props.forEach(([k,v])=>{
-    let p=make('div','prop');
-    p.append(make('span','',k),make('strong','',v));
-    box.appendChild(p);
-  });
-  
-  document.getElementById('config').innerHTML=shellConfig(e.n);
-  document.getElementById('shells').innerHTML=t.shells + electronConfig(e.n);
-  
-  // Lewis Dot Structure (lines for pairs, dots for single)
-  let v=outerElectrons(raw.find(x=>x[0]===n));
-  let dotHTML='';
-  if(v>0){
-    let counts=[0,0,0,0];
-    for(let i=0;i<Math.min(v,4);i++) counts[i]=1;
-    for(let i=4;i<v;i++) counts[i-4]=2;
-    if(e.s==='He') counts=[2,0,0,0];
-    
-    let renderPos = (count, isHoriz) => {
-      if(count===1) return '<span style="font-size:22px; line-height:1;">•</span>';
-      if(count===2) return isHoriz ? '<span aria-label="electron pair" style="display:inline-block;width:22px;height:3px;background:currentColor;border-radius:2px;vertical-align:middle"></span>' : '<span aria-label="electron pair" style="display:inline-block;width:3px;height:22px;background:currentColor;border-radius:2px;vertical-align:middle"></span>';
-      return '';
-    };
-
-    let top = renderPos(counts[0], true);
-    let right = renderPos(counts[1], false);
-    let bottom = renderPos(counts[2], true);
-    let left = renderPos(counts[3], false);
-
-    dotHTML=`<div style="display:grid;grid-template-columns:30px 60px 30px;grid-template-rows:30px 60px 30px;align-items:center;justify-items:center;margin:auto;">
-      <div style="grid-column:2;grid-row:1">${top}</div>
-      <div style="grid-column:1;grid-row:2;justify-self:end">${left}</div>
-      <div style="grid-column:2;grid-row:2;font-size:36px;font-weight:800">${e.s}</div>
-      <div style="grid-column:3;grid-row:2;justify-self:start">${right}</div>
-      <div style="grid-column:2;grid-row:3">${bottom}</div>
-    </div>`;
-  } else {
-    dotHTML=`<div style="font-size:36px;font-weight:800">${e.s}</div>`;
-  }
-  document.getElementById('lewis').innerHTML=dotHTML;
+ const e=raw.find(x=>x.n===Number(n));if(!e)return;selected=e.n;
+ document.querySelectorAll('.element').forEach(b=>b.classList.toggle('selected',Number(b.dataset.n)===e.n));
+ const big=$('big-element');big.className='big-element '+e.f;big.innerHTML='<div class="anum">'+e.n+'</div><div class="sym">'+e.s+'</div><div>'+elName(e)+'</div>';
+ $('el-name').textContent=elName(e);$('el-family').textContent=famName(e.f);$('el-num').textContent=e.n;$('el-mass').textContent=e.mass+' u';
+ const t=tr[lang],props=[[t.state,e.state],[t.density,e.density],[t.melting,e.mp],[t.boiling,e.bp],[t.classification,famName(e.f)],[t.valency,e.val],[t.oxidation,e.ox],[t.electro,e.eneg]];
+ $('props').innerHTML='';props.forEach(([k,v])=>{const p=make('div','prop');p.append(make('span','',k),make('strong','',String(v)));$('props').appendChild(p)});
+ $('config').textContent=shellText(e);$('shells').textContent=t.orbital+': '+orbitalText(e.n);renderLewis(e);
 }
-
-document.getElementById('search').addEventListener('input',ev=>{
-  let q=ev.target.value.trim().toLowerCase();
-  let matches=raw.filter(e=>String(e[0])===q||e[1].toLowerCase()===q||e[2].toLowerCase().includes(q));
-  document.querySelectorAll('.element').forEach(el=>{
-    let e=raw.find(x=>x[0]===+el.dataset.n);
-    el.style.opacity=!q||matches.some(x=>x[0]===e[0])?'1':'.22';
-  });
-  if(matches.length===1) showElement(matches[0][0]);
-});
-
-document.querySelectorAll('nav button[data-jump]').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  document.getElementById(b.dataset.jump).scrollIntoView({behavior:'smooth',block:'start'});
-}));
-
-renderFamilies();
-updateLanguage();
-showElement(8);
+function fillCompareSelects(){
+ ['compare-a','compare-b'].forEach((id,i)=>{const s=$(id);s.innerHTML='';raw.forEach(e=>{const o=document.createElement('option');o.value=e.n;o.textContent=e.s+' — '+elName(e);s.appendChild(o)});s.value=i===0?'3':'17';s.addEventListener('change',renderCompare)});
+}
+function renderCompare(){
+ const a=raw.find(e=>e.n===Number($('compare-a').value)),b=raw.find(e=>e.n===Number($('compare-b').value));const t=tr[lang];$('compare-results').innerHTML='';
+ [a,b].forEach(e=>{const c=make('div','compare-card');c.appendChild(make('h3','',e.s+' · '+elName(e)));[[t.number,e.n],[t.mass,e.mass+' u'],[t.state,e.state],[t.density,e.density],[t.valency,e.val],[t.electro,e.eneg]].forEach(([k,v])=>c.appendChild(make('p','',k+': '+v)));$('compare-results').appendChild(c)})
+}
+function newQuestion(){
+ const types=['number','symbol','shell','family'];const type=types[Math.floor(Math.random()*types.length)];const e=raw[Math.floor(Math.random()*raw.length)];let question,correct;
+ if(type==='number'){question=lang==='ar'?'ما العدد الذري للعنصر '+elName(e)+'؟':'What is the atomic number of '+e.en+'?';correct=String(e.n)}
+ if(type==='symbol'){question=lang==='ar'?'ما رمز العنصر ذي العدد الذري '+e.n+'؟':'Which symbol belongs to atomic number '+e.n+'?';correct=e.s}
+ if(type==='shell'){question=lang==='ar'?'كم إلكتروناً يوجد في الغلاف الخارجي للعنصر '+elName(e)+'؟':'How many valence electrons does '+e.en+' have?';correct=String(e.shell[e.shell.length-1])}
+ if(type==='family'){question=lang==='ar'?'إلى أي عائلة ينتمي '+elName(e)+'؟':'Which family does '+e.en+' belong to?';correct=famName(e.f)}
+ const pool=[...new Set([correct,...raw.filter(x=>x.n!==e.n).sort(()=>Math.random()-.5).slice(0,3).map(x=>type==='number'?String(x.n):type==='symbol'?x.s:type==='shell'?String(x.shell[x.shell.length-1]):famName(x.f))])].sort(()=>Math.random()-.5);
+ currentQuestion={correct};$('question').textContent=question;$('answers').innerHTML='';$('feedback').textContent='';
+ pool.forEach(answer=>{const b=make('button','',answer);b.addEventListener('click',()=>{if($('answers').dataset.done)return;$('answers').dataset.done='1';answered++;if(answer===correct){score++;$('feedback').textContent=tr[lang].correct}else{$('feedback').textContent=tr[lang].wrong+correct} $('score').textContent=tr[lang].score+': '+score+' / '+answered;Array.from($('answers').children).forEach(x=>{x.disabled=true;if(x.textContent===correct)x.classList.add('active')})});$('answers').appendChild(b)})
+}
+function renderGuide(){const root=$('guide-cards');root.innerHTML='';tr[lang].steps.forEach(s=>{const a=make('article');a.append(make('b','',s[0]),make('p','',s[1]));root.appendChild(a)})}
+function updateLanguage(){
+ const t=tr[lang];document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+ const map={'title':'title','subtitle':'subtitle','nav-table':'table','nav-fam':'families','nav-prop':'properties','nav-tools':'tools','eyebrow':'eyebrow','hero-title':'hero','hero-desc':'heroDesc','stat-elements':'elements','stat-groups':'groups','stat-periods':'periods','table-title':'tableTitle','table-desc':'tableDesc','clear-search':'clear','detail-title':'detail','detail-desc':'detailDesc','lab-number':'number','lab-mass':'mass','config-title':'config','lewis-title':'lewis','lewis-note':'lewisNote','families-title':'familyTitle','families-desc':'familyDesc','compare-title':'compare','compare-desc':'compareDesc','quiz-title':'quiz','quiz-desc':'quizDesc','new-question':'newQuestion','guide-title':'guide','data-note':'data','team-kicker':'team','credits-title':'credits','team-role':'role','footer-note':'footer'};
+ Object.keys(map).forEach(id=>{const node=$(id);if(node){if(id==='hero-title')node.innerHTML=t[map[id]];else node.textContent=t[map[id]]}});
+ $('search').placeholder=t.search;$('lang-btn').textContent=lang==='en'?'العربية':'English';renderTable();renderLegendAndFamilies();showElement(selected);fillCompareSelects();renderCompare();renderGuide();$('score').textContent=t.score+': '+score+' / '+answered;
+}
+$('lang-btn').addEventListener('click',()=>{lang=lang==='en'?'ar':'en';updateLanguage()});
+$('search').addEventListener('input',ev=>{const q=ev.target.value.trim().toLocaleLowerCase();let hits=raw.filter(e=>String(e.n)===q||e.s.toLowerCase()===q||e.en.toLowerCase().includes(q)||e.ar.includes(q));document.querySelectorAll('.element').forEach(b=>{const e=raw.find(x=>x.n===Number(b.dataset.n));b.style.opacity=!q||hits.some(x=>x.n===e.n)?'1':'.18'});if(hits.length===1)showElement(hits[0].n)});
+$('clear-search').addEventListener('click',()=>{$('search').value='';document.querySelectorAll('.element').forEach(b=>b.style.opacity='1')});
+document.querySelectorAll('nav [data-jump]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav [data-jump]').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.jump).scrollIntoView({behavior:'smooth',block:'start'})}));
+$('new-question').addEventListener('click',newQuestion);
+updateLanguage();newQuestion();
 </script>
 </body>
 </html>
